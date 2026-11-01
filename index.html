@@ -190,9 +190,9 @@ const ALL=derive(agg(DATA));
 
 function metricCells(o){
   return `<td class="bl stk">${fmt(o.stock,false)}</td>
-  <td class="bl">${tgt1(o.tt)}</td><td class="q">${fmt(o.tq)}</td><td>${fmt(o.tn)}</td>${pc(o.pT)}
+  <td class="bl">${o.n===1?tgt1(o.tt):tgt(o.tt)}</td><td class="q">${fmt(o.tq)}</td><td>${fmt(o.tn)}</td>${pc(o.pT)}
   <td class="bl">${tgt(o.tmtd)}</td><td class="q">${fmt(o.mtd)}</td><td>${fmt(o.mtdn)}</td>${pc(o.pN)}
-  <td class="bl">${tgt(o.tall)}</td>${pc(o.pA)}`;
+  <td class="bl">${tgt(o.tall)}</td><td class="q">${fmt(o.mtd)}</td>${pc(o.pA)}`;
 }
 /* lead = [label, minWidth, sticky] ; sticky columns get class sc + data-c index */
 function thead(lead){
@@ -200,11 +200,11 @@ function thead(lead){
   <th class="h-stock bl">STOCK<br>คงเหลือ</th>
   <th colspan="4" class="h-today bl">TODAY ${TODAY}</th>
   <th colspan="4" class="h-new bl">MTD ${META.mtdl} (${META.dayn} วัน)</th>
-  <th colspan="2" class="h-tot bl">ทั้งแคมเปญ ${META.camp} (${META.days} วัน)</th></tr>
+  <th colspan="3" class="h-tot bl">ทั้งแคมเปญ ${META.camp} (${META.days} วัน)</th></tr>
   <tr class="s"><th class="s-stock bl">${META.pull}</th>
   <th class="s-today bl">TARGET<br>วันนี้</th><th class="s-today">QTY</th><th class="s-today">NET<br>(บาท)</th><th class="s-today">%ACH<br>วันนี้</th>
   <th class="s-new bl">TARGET<br>MTD</th><th class="s-new">QTY</th><th class="s-new">NET<br>(บาท)</th><th class="s-new">%ACH<br>MTD</th>
-  <th class="s-tot bl">TARGET<br>แคมเปญ</th><th class="s-tot">%ACH<br>แคมเปญ</th></tr></thead>`;
+  <th class="s-tot bl">TARGET<br>แคมเปญ</th><th class="s-tot">QTY</th><th class="s-tot">%ACH<br>แคมเปญ</th></tr></thead>`;
 }
 function kpis(o,extra){
   return `<div class="kpis">
