@@ -136,6 +136,41 @@ td.zero{color:var(--muted)}
 tr.nomaster td.l{font-style:italic}
 .tag{display:inline-block;font-size:10.5px;font-weight:600;border-radius:4px;padding:0 5px;background:var(--grp);color:var(--muted)}
 .tag.nm{background:var(--low-bg);color:var(--bad-fg)}
+
+/* ===== Card design v2 (Nov 2026) - ให้ตรงกับการ์ด LINE ===== */
+:root{--today:#0f8b8d;--new:#6741d9;--tot:#334155;--all:#1e3a8a;--head:#3f4b5b}
+body{font-size:14.5px}
+.mast{background:linear-gradient(120deg,#8f0d14,#c8102e);color:#fff;border-radius:16px;padding:20px 26px;align-items:center}
+.mast .eyebrow{color:#ffd6d9;font-weight:700}
+.mast h1{color:#fff}
+.mast .asof{color:#ffe3e5;font-size:13px}
+.mast .badge{display:inline-block;margin-top:6px;background:#fff;color:#b5121b;font-weight:700;font-size:14px;padding:5px 12px;border-radius:999px;font-family:var(--f-body)}
+.card h2{color:var(--fg)}
+.kpis{grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.kpi{padding:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.kpi .kh{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 14px;color:#fff;font-weight:700;font-size:14px}
+.kpi .kh span{font-weight:400;font-size:12px;opacity:.92}
+.kpi .kb{padding:12px 14px 14px}
+.kpi .kp{font-size:30px;font-weight:700;line-height:1.05;font-variant-numeric:tabular-nums}
+.kpi .kbar{height:10px;background:var(--line);border-radius:6px;margin:10px 0 12px;overflow:hidden}.kpi .kbar i{display:block;height:100%;border-radius:6px}
+.kpi .ks{display:grid;grid-template-columns:repeat(3,1fr);text-align:center;border-top:1px solid var(--line);padding-top:10px}
+.kpi .ks div+div{border-left:1px solid var(--line)}
+.kpi .ks b{display:block;font-size:18px;font-variant-numeric:tabular-nums}.kpi .ks small{font-size:12px;color:var(--muted)}
+table{font-size:13.5px}
+th,td{padding:7px 9px}
+td{text-align:center}
+.g th{font-size:13.5px;border-right:2px solid var(--surface)}
+.s th{font-size:12.5px;font-weight:700;border-bottom:2px solid currentColor}
+.s-stock{background:#dbe4ff;color:#1e3a8a!important} .s-today{background:#d7f2f2;color:#0b6e70!important} .s-new{background:#e9e3ff;color:#5530c4!important} .s-tot{background:#e2e8f0;color:#1f2937!important}
+.bl{border-left:1px solid var(--line)}
+td.p{font-weight:700;background:none!important}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:2px 8px;border-radius:7px;font-weight:700}
+.pill .bar{width:40px;height:5px;background:rgba(0,0,0,.08);border-radius:4px;overflow:hidden}.pill .bar i{display:block;height:100%}
+.pill.z{color:var(--muted)}
+tr.sum td{background:#fde8ea!important;border-top:1px solid #f3c4ca;color:#111827}
+tr.grand td{background:#1f2937!important;color:#fff;border-top:none}
+tr.grand .pill{background:none!important;color:#fff!important;padding:0} tr.grand .pill .bar{display:none}
+td.frm{color:#b5121b}
 </style>
 </head>
 <body>
@@ -145,7 +180,7 @@ tr.nomaster td.l{font-style:italic}
       <div class="eyebrow">Daily Sales · Special promotion</div>
       <h1>Special promotion new Device bundle</h1>
     </div>
-    <div class="asof">Data As of 07/11/2026 · ดึงข้อมูล 18:30<br>แคมเปญ 01/11 – 30/11/2026 · วันที่ 7/30</div>
+    <div class="asof">Data As of 07/11/2026 · ดึงข้อมูล 18:30<br>แคมเปญ 01/11 – 30/11/2026<br><span class="badge">วันที่ 7 / 30</span></div>
   </header>
   <p class="meta">ไม่รวม CreditNote · ตัด SERIAL ซ้ำ · Target/วัน = Target พ.ย. รายสาขา (Master.xlsx) ÷ 30 วัน ใช้เท่ากันทุกวัน ไม่แยก Week Day / Week End · Target MTD = Target/วัน × จำนวนวันที่ผ่านมา</p>
   <nav aria-label="ตัวกรอง"><div class="filters">
@@ -179,7 +214,9 @@ const fmt = (v,dash=true)=> (dash && Math.round(v)===0) ? "-" : Math.round(v).to
 const tgt = v => Math.round(v).toLocaleString("en-US");
 const tgt1 = v => (v>0&&v<10) ? v.toFixed(1) : tgt(v);   // Target/วันของสาขาเป็นทศนิยม
 const pct = v => (v*100).toFixed(1)+"%";
-const pc = v => `<td class="p ${v>=1?"good":"bad"}">${pct(v)}</td>`;
+const cC = p => p>=1?"#0f9d58":(p>=.5?"#f08c00":"#e03131"), cB = p => p>=1?"#d3f9d8":(p>=.5?"#fff3bf":"#ffe3e3");
+const pc = (v,bar) => !v ? `<td class="p"><span class="pill z">${pct(0)}</span></td>` :
+  `<td class="p"><span class="pill" style="background:${cB(v)};color:${cC(v)}">${pct(v)}${bar?`<span class="bar"><i style="width:${Math.min(v*100,100).toFixed(0)}%;background:${cC(v)}"></i></span>`:""}</span></td>`;
 const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
 const areas=[...new Set(DATA.map(s=>s.area))];
@@ -191,7 +228,7 @@ const ALL=derive(agg(DATA));
 function metricCells(o){
   return `<td class="bl stk">${fmt(o.stock,false)}</td>
   <td class="bl">${o.n===1?tgt1(o.tt):tgt(o.tt)}</td><td class="q">${fmt(o.tq)}</td><td>${fmt(o.tn)}</td>${pc(o.pT)}
-  <td class="bl">${tgt(o.tmtd)}</td><td class="q">${fmt(o.mtd)}</td><td>${fmt(o.mtdn)}</td>${pc(o.pN)}
+  <td class="bl">${tgt(o.tmtd)}</td><td class="q">${fmt(o.mtd)}</td><td>${fmt(o.mtdn)}</td>${pc(o.pN,true)}
   <td class="bl">${tgt(o.tall)}</td><td class="q">${fmt(o.mtd)}</td>${pc(o.pA)}`;
 }
 /* lead = [label, minWidth, sticky] ; sticky columns get class sc + data-c index */
@@ -206,13 +243,20 @@ function thead(lead){
   <th class="s-new bl">TARGET<br>MTD</th><th class="s-new">QTY</th><th class="s-new">NET<br>(บาท)</th><th class="s-new">%ACH<br>MTD</th>
   <th class="s-tot bl">TARGET<br>แคมเปญ</th><th class="s-tot">QTY</th><th class="s-tot">%ACH<br>แคมเปญ</th></tr></thead>`;
 }
+function kbox(label,sub,color,q,t){
+  const p=t?q/t:0, tt=(t>0&&t<10)?t.toFixed(1):tgt(t), gap=Math.max(0,Math.ceil(+(t-q).toFixed(6)));
+  return `<div class="kpi"><div class="kh" style="background:${color}">${label}<span>${sub}</span></div><div class="kb">
+   <div class="kp" style="color:${cC(p)}">${pct(p)}</div><div class="kbar"><i style="width:${Math.min(p*100,100).toFixed(0)}%;background:${cC(p)}"></i></div>
+   <div class="ks"><div><b>${tt}</b><small>เป้า</small></div><div><b>${fmt(q,false)}</b><small>ขายได้</small></div><div><b style="color:${gap?"#e03131":"#0f9d58"}">${gap.toLocaleString("en-US")}</b><small>ยังขาด</small></div></div></div></div>`;
+}
 function kpis(o,extra){
   return `<div class="kpis">
-   <div class="kpi"><div class="l">วันนี้ ${TODAY}</div><div class="v">${fmt(o.tq,false)} <small class="${o.pT>=1?"good-t":"bad-t"}">/ ${tgt1(o.tt)} · ${pct(o.pT)}</small></div><div class="n">Target วันนี้ ${tgt1(o.tt)} เครื่อง · ${fmt(o.tn,false)} ฿</div></div>
-   <div class="kpi"><div class="l">MTD ${META.mtdl} ${extra}</div><div class="v">${fmt(o.mtd,false)} <small>เครื่อง</small></div><div class="n">${fmt(o.mtdn,false)} ฿</div></div>
-   <div class="kpi"><div class="l">%ACH MTD</div><div class="v ${o.pN>=1?"good":"bad"}">${pct(o.pN)}</div><div class="n">${fmt(o.mtd,false)} / Target MTD ${tgt(o.tmtd)} เครื่อง</div></div>
-   <div class="kpi"><div class="l">%ACH แคมเปญ (${META.days} วัน)</div><div class="v ${o.pA>=1?"good":"bad"}">${pct(o.pA)}</div><div class="n">Target แคมเปญ ${tgt(o.tall)} · เหลืออีก ${fmt(Math.max(0,o.tall-o.mtd),false)} เครื่อง</div></div>
-   <div class="kpi stock"><div class="l">STOCK คงเหลือ</div><div class="v">${fmt(o.stock,false)} <small>เครื่อง</small></div><div class="n">รุ่นที่ร่วมแคมเปญ · ณ ${META.asof} ${META.pull}</div></div>
+   ${kbox("วันนี้",TODAY,"#0f8b8d",o.tq,o.tt)}
+   ${kbox("MTD "+extra,META.mtdl+" · "+META.dayn+" วัน","#6741d9",o.mtd,o.tmtd)}
+   ${kbox("ทั้งแคมเปญ",META.camp,"#334155",o.mtd,o.tall)}
+   <div class="kpi"><div class="kh" style="background:#b5121b">ยอดขาย MTD<span>NET (บาท)</span></div><div class="kb">
+    <div class="kp">฿${fmt(o.mtdn,false)}</div><div class="kbar" style="background:none"></div>
+    <div class="ks" style="grid-template-columns:1fr 1fr"><div><b>${fmt(o.stock,false)}</b><small>Stock คงเหลือ · ${META.pull}</small></div><div><b>${o.n.toLocaleString("en-US")}</b><small>สาขา</small></div></div></div></div>
   </div>`;
 }
 const REGIONS=["BMA","UPC I","UPC II"];
